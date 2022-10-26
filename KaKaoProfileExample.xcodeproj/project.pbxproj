@@ -31,6 +31,7 @@
 		B527044128EEC3A0002B167D /* ViewModelBindableType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B527044028EEC3A0002B167D /* ViewModelBindableType.swift */; };
 		B527044428EEC531002B167D /* FirstViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B527044328EEC531002B167D /* FirstViewModel.swift */; };
 		B527044628EECEB1002B167D /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B527044528EECEB1002B167D /* ProfileViewModel.swift */; };
+		B58B9A1F2909520100872BD2 /* RxMessageChangeDelegateProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = B58B9A1E2909520100872BD2 /* RxMessageChangeDelegateProxy.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -56,6 +57,7 @@
 		B527044028EEC3A0002B167D /* ViewModelBindableType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModelBindableType.swift; sourceTree = "<group>"; };
 		B527044328EEC531002B167D /* FirstViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstViewModel.swift; sourceTree = "<group>"; };
 		B527044528EECEB1002B167D /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
+		B58B9A1E2909520100872BD2 /* RxMessageChangeDelegateProxy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RxMessageChangeDelegateProxy.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -117,6 +119,7 @@
 			isa = PBXGroup;
 			children = (
 				B527044028EEC3A0002B167D /* ViewModelBindableType.swift */,
+				B58B9A1E2909520100872BD2 /* RxMessageChangeDelegateProxy.swift */,
 			);
 			path = Protocol;
 			sourceTree = "<group>";
@@ -312,6 +315,7 @@
 				B527042428EEAFC2002B167D /* BaseTableViewCell.swift in Sources */,
 				B527041A28EEAD46002B167D /* FirstViewController.swift in Sources */,
 				B527044428EEC531002B167D /* FirstViewModel.swift in Sources */,
+				B58B9A1F2909520100872BD2 /* RxMessageChangeDelegateProxy.swift in Sources */,
 				B527042228EEAFB0002B167D /* BaseViewController.swift in Sources */,
 				B527044628EECEB1002B167D /* ProfileViewModel.swift in Sources */,
 				B527042028EEAF6A002B167D /* PersonTableViewCell.swift in Sources */,

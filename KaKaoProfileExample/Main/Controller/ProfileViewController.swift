@@ -9,6 +9,7 @@ import UIKit
 
 import SnapKit
 import RxSwift
+import RxCocoa
 
 class ProfileViewController: BaseViewController, ViewModelBindableType {
 
@@ -16,14 +17,14 @@ class ProfileViewController: BaseViewController, ViewModelBindableType {
     // MARK: - Properties
 
 
+    private var vc = MChangeViewController()
     var viewTranslation = CGPoint(x: 0, y: 0)
     var viewVelocity = CGPoint(x: 0, y: 0)
 
 
-    private let  dismissButton : UIButton = {
+    private let dismissButton : UIButton = {
         let button = UIButton()
         button.setImage(UIImage(named: "profileCloseBtn"), for: .normal)
-//        button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
 
@@ -52,7 +53,6 @@ class ProfileViewController: BaseViewController, ViewModelBindableType {
         label.textColor = .white
         label.font = .systemFont(ofSize: 15, weight : .regular)
         label.translatesAutoresizingMaskIntoConstraints = false
-
         return label
     }()
 
@@ -63,17 +63,11 @@ class ProfileViewController: BaseViewController, ViewModelBindableType {
         return view
     }()
 
-    private let firstButton: UIView =  ImageLabelView(symbolName: "profileTalkImg",
+    private let firstButton: UIView = ImageLabelView(symbolName: "profileTalkImg",
                                  textLabel: "나와의 채팅")
 
-
-    private lazy var secondButton: UIView = {
-        let view = ImageLabelView(symbolName: "profileEditImg",
+    private let secondButton: UIView = ImageLabelView(symbolName: "profileEditImg",
                                   textLabel: "프로필 편집")
-        view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(secondButtonTapped)))
-
-        return view
-    }()
 
     private let thirdButton: UIView = ImageLabelView(symbolName: "profileStoryImg",
                                   textLabel: "카카오스토리")
@@ -151,6 +145,32 @@ class ProfileViewController: BaseViewController, ViewModelBindableType {
         viewModel.infoObservable
             .bind(to: rx.configInfo)
             .disposed(by: viewModel.disposeBag)
+
+        secondButton.rx.tapGesture
+            .subscribe(onNext: { [weak self] recognizer in
+                guard let self else { return }
+                self.vc.delegate = self
+                self.present(self.vc, animated: true)
+            })
+            .disposed(by: viewModel.disposeBag)
+
+
+        vc.rx.changeSubTitle
+            .map { [weak self] subTitle in
+                return Information(imageName: self!.viewModel.info.imageName, name: self!.viewModel.info.name, subTitle: subTitle ?? "")
+            }
+            .subscribe(onNext: { [weak self] newInfo in
+                guard let self else { return }
+                self.viewModel.infoObservable.accept(newInfo)
+                self.dismiss(animated: true)
+            })
+            .disposed(by: self.viewModel.disposeBag)
+
+        vc.rx.changeStatusMessage
+            .subscribe(onNext: { str in
+                self.subLabel.text = str
+            })
+            .disposed(by: self.viewModel.disposeBag)
     }
 
 
@@ -206,11 +226,6 @@ class ProfileViewController: BaseViewController, ViewModelBindableType {
         }
     }
 
-    @objc func secondButtonTapped() {
-        let vc = MChangeViewController()
-        vc.delegate = self
-        present(vc, animated: true)
-    }
 
 }
  // MARK: - MessageChangeDelegate
@@ -229,5 +244,20 @@ extension Reactive where Base: ProfileViewController {
     }
 }
 
+extension Reactive where Base: UIView {
+    var tapGesture: ControlEvent<UITapGestureRecognizer> {
+        self.base.isUserInteractionEnabled = true
+        let gesture = UITapGestureRecognizer()
+        self.base.addGestureRecognizer(gesture)
+        return gesture.rx.event
+    }
+}
 
+extension Reactive where Base: MChangeViewController {
+    var changeSubTitle: ControlEvent<String?> {
+        let source = self.base.changeButton.rx.tap
+            .withLatestFrom(self.base.textField.rx.text)
 
+        return ControlEvent(events: source)
+    }
+}

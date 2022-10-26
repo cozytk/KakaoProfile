@@ -1,9 +1,13 @@
 import UIKit
 
+import RxCocoa
+import RxSwift
+
 class MChangeViewController: BaseViewController {
 
     // MARK: - Properties
     var delegate: MessageChangeDelegate?
+    private let disposeBag = DisposeBag()
 
     private let mainTitle: UILabel = {
         let label = UILabel()
@@ -15,7 +19,7 @@ class MChangeViewController: BaseViewController {
         return label
     }()
 
-    private let textField: UITextField = {
+    let textField: UITextField = {
         let textField = UITextField()
         textField.placeholder = "Placeholder"
         textField.translatesAutoresizingMaskIntoConstraints = false
@@ -25,14 +29,13 @@ class MChangeViewController: BaseViewController {
         return textField
     }()
 
-    private lazy var changeButton: UIButton = {
+    let changeButton: UIButton = {
         let button = UIButton()
         button.setTitle("변경", for: .normal)
         button.setTitleColor(UIColor.black, for: .normal)
         button.backgroundColor = .yellow
         button.layer.cornerRadius = 15
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.addTarget(self, action: #selector(changedTapped), for: .touchUpInside)
         return button
     }()
 
@@ -62,14 +65,23 @@ class MChangeViewController: BaseViewController {
         view.backgroundColor = .systemBackground
     }
 
-    //MARK: - Func
+    func bind() {
+        changeButton.rx.tap
+            .subscribe(onNext: { [weak self] _ in
+//                guard let self else { return }
+//                self.viewModel.changeSubTitle(title: self.textField.text)
+//                self.dismiss(animated: true)
+                self?.delegate?.changeStatusMessage!(content: self?.textField.text ?? "")
+            })
+            .disposed(by: disposeBag)
+//            .disposed(by: viewModel.disposeBag)
 
-    @objc func changedTapped() {
-        delegate?.changeStatusMessage(content: textField.text ?? "")
-        dismiss(animated: true)
     }
+
+    //MARK: - Func
 }
 
+@objc
 protocol MessageChangeDelegate {
-    func changeStatusMessage(content: String)
+    @objc optional func changeStatusMessage(content: String)
 }
